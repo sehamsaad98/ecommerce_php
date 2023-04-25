@@ -1,0 +1,236 @@
+/* start main rules */
+body{
+   background-color: rgb(250, 250, 250) !important;
+   font-size: 16px!important;
+}
+.asterisk{
+   color: red;
+   font-size: 40px;
+   position: absolute;
+   right:30px;
+   top:8px;
+}
+/* end main rule */
+
+/* start login form */
+.login{
+  width: 300px;
+  margin: 100px auto;   
+
+}
+input{
+  margin-bottom: 10px;
+}
+/* end login form */
+
+/* start bootstrap edits */
+.navbar{
+   border-radius: 0;
+   margin-bottom: 55px;
+   color: bisque;
+   box-shadow: 2px 2px silver;
+   background-color: white;
+
+}
+.navbar-brand{
+   font-size: 1em;
+   color: black;
+}
+.nav>li>a,
+.navbar-brand{
+  padding: 15px 12px;
+}
+.navbar .nav-link , .navbar-brand{
+   color:black;
+}
+ .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover,.dropdown-menu {
+   color: rgba(191, 45, 45, 0.9) ;
+ }
+ .dropdown-menu .dropdown-item{
+   min-width: 190px ;
+   padding: 10px; ;
+   font-size: 1em;
+   margin-top: 0;
+
+ }
+.dropdown-menu .dropdown-item:focus{
+background-color:rgb(190, 24, 24) ;
+min-width: 180px ;
+
+}
+/* .dropdown-menu .dropdown-item:hover{
+   background-color:rgb(252, 88, 88) ;
+   } */
+/* start bootstrap edits */
+/* start Dashboard page  */
+.home-stats .stat{
+   padding: 20px;
+   font-size: 16px;
+   color: white;
+   border-radius: 10px;
+
+}
+.home-stats .stat a{
+   color: #fff;
+   text-decoration: none;
+}
+.home-stats .stat span{
+display: block;
+font-size: 60px;
+color: white;
+}
+.home-stats .st-members{
+   background-color: #2980b9;
+}
+.home-stats .st-pending{
+   background-color: #e74c3c;
+}
+.home-stats .st-items{
+   background-color: #d35400;
+}
+.home-stats .st-comments{
+   background-color:#16a085;
+}
+.latest{
+   margin-top: 30px;
+}
+.latest-users{
+   margin-bottom: 0px;
+}
+.latest-users li {
+   padding: 10px;;
+   
+}
+.latest-users li a{
+   text-decoration: none;
+   color: white;
+}
+.latest-users li a:hover{
+   color: #FFF;
+}
+.latest-users li:nth-child(odd){
+   background-color: #EEE;
+}
+.latest-users .btn-success{
+   padding: 0px 8px;
+}
+.latest-users .btn-info{
+   padding: 0px 8px;
+   margin-right: 3px;
+}
+/* end Dashboard page  */
+
+/* start members */
+h1{
+   font-size: 55px !important;
+   margin: 20px 0px  !important;
+   font-weight: bolder   !important;
+
+}
+.password{
+	position: relative !important;
+}
+.iconspan{
+   position: absolute;
+   right: 15px;
+   transform: translate(0,-50%);
+   top: 50%;
+   cursor: pointer;
+}
+.fa-eye{
+   color: rgb(151, 147, 147);
+}
+
+.main-table{
+   box-shadow: 0 3px 20px #ccc;
+}
+.main-table td{
+   vertical-align: middle !important;
+}
+.main-table tr:first-child td{
+background-color: #403e3e;
+color:white;
+font-weight: bold;
+}
+.main-table .btn{
+   padding:3px 10px;
+   color: #fff;
+
+}
+.main-table .btn i {
+   position: relative;
+   right: 2px;
+}
+.main-table  .activate{
+   margin-left: 5px;
+}
+/* end members */
+/* start Category Page  */
+.categories .card-body{
+   padding:0px;
+}
+.categories .ordering a {
+   color:gray;
+   text-decoration: none;
+   font-weight: bold;
+}
+.categories .ordering  .active {
+   color:#eb4d4b;
+}
+.categories .cat{
+   padding: 10px;
+   position: relative;
+   overflow: hidden;
+
+}
+.categories .cat:hover .hidden-buttons{
+   right: 10px;
+}
+.categories .cat:hover{
+   background-color: #EEE;
+}
+.categories .cat .hidden-buttons {
+   -webkit-transition:all .5s ease-in-out ;
+   -moz-transition: all .5s ease-in-out;
+   -transition: all .5s ease-in-out;
+   position: absolute;
+   top: 10px;
+   right: -140px;
+}
+.categories .cat .hidden-buttons a{
+   margin-right: 5px;
+}
+.categories hr{
+   margin-top: 5px;
+   margin-bottom: 5px;
+}
+.categories .cat h3{
+   margin: 0 0 10px;
+ 
+}
+.categories .cat hr{
+   border-top:3px dashed;
+
+}
+.categories .cat:last-of-type ~hr{
+   display: none;
+}
+.categories .cat .comon-span{
+      color: #fff;
+   margin-right: 4px;
+   padding: 3px 7px;
+   border-radius: 5px;
+}
+.categories .cat .visibility{
+   background-color: #eb4d4b;
+
+}
+.categories .cat .comment{
+   background-color: #535c68;
+
+}
+.categories .cat .ads{
+   background-color:#30336b;
+
+}
+/* end Category Page  */
