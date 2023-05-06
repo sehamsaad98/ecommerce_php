@@ -26,16 +26,20 @@ if (isset($_SESSION['usersession'])) {
         }
      $stmt2 =$con->prepare("SELECT * FROM categories ORDER BY ordering $sort");
      $stmt2->execute();
-     $cats=$stmt2->fetchAll();?>
+     $cats=$stmt2->fetchAll();
+     if(!empty($cats)){?>
      <h1 class="text-center"> Manage Categories</h1>
      <div class="container categories">
      <div class="card">
                     <div class="card-header">
-                    Manage Categories
-                    <div class="ordering float-end">
-                        Ordering : 
+                    <i class="fa fa-edit"></i>Manage Categories
+                    <div class="option float-end">
+                       <i class="fa fa-sort"></i> Ordering : [
                         <a class="<?php if($sort=='ASC'){echo 'active';}?>" href="?sort=ASC">ASC</a> |
-                        <a class="<?php if($sort=='DESC'){echo 'active';}?>"href="?sort=DESC">DESC</a>
+                        <a class="<?php if($sort=='DESC'){echo 'active';}?>"href="?sort=DESC">DESC</a>]
+                        <i class="fa-regular fa-eye"></i> View : [
+                        <span class="active" data-view="full">Full </span>|
+                        <span data-view="class">Classic</span>]
                     </div>
                     </div>
                    
@@ -43,25 +47,34 @@ if (isset($_SESSION['usersession'])) {
                         echo "<div class='cat'>";
                            echo"<div class='hidden-buttons'>";
                            echo "<a href='categories.php?do=edit&catid=".$category['id']."' class='btn btn-sm btn-primary'><i class='fa fa-edit'></i> Edit</a>";
-                           echo "<a href='' class='btn btn-sm btn-danger'><i class='fa fa-close'></i> Delete</a>";
+                           echo "<a href='categories.php?do=Delete&catid=".$category['id'] ."' class='confirm btn btn-sm btn-danger'><i class='fa fa-close'></i> Delete</a>";
 
                            echo "</div>";
                             echo "<h3>". $category['name'] ."</h3> ";
-                            echo "<p>"; if ($category['description']==''){
-                                echo "this description is empty";
-                            }else{
-                               echo $category['description'];
-                            } echo "</p>" ;
+                            echo "<div class='full-view'>";
+                                echo "<p>"; if ($category['description']==''){
+                                    echo "this description is empty";
+                                }else{
+                                echo $category['description'];
+                                } echo "</p>" ;
 
-                            if ($category['visibility'] ==1){ echo "<span class='visibility comon-span'> Hidden</span> ";}
-                            if ($category['allow_comment'] ==1){ echo "<span class='comment comon-span'> Comment Disabled </span> ";}
-                            if ($category['allow_ads'] ==1){ echo "<span class='ads comon-span'> Advertise Disabled </span> ";}
+                                if ($category['visibility'] ==1){ echo "<span class='visibility comon-span'><i class='fa-regular fa-eye-slash'></i> Hidden</span> ";}
+                                if ($category['allow_comment'] ==1){ echo "<span class='comment comon-span'><i class='fa fa-close'></i> Comment Disabled </span> ";}
+                                if ($category['allow_ads'] ==1){ echo "<span class='ads comon-span'> <i class='fa fa-close'></i>Advertise Disabled </span> ";}
+                            echo "</div>";
                           echo"</div>";
                           echo"<hr>";
                         }
                         ?></div>
                 </div>
+                <a href="categories.php?do=add" class="btn btn-primary add-category"><i class="fa fa-plus"></i> Add New Categories</a>
      </div>
+     <?php }else{
+                    echo "<div class='container'>";
+                    echo "<div class='alert alert-info fw-bold text-center'>There Is No  Record To Show  </div>";
+                    echo "<a href='categories.php?do=add' class='btn btn-primary'><i class='fa fa-plus'></i> Add New Categories </a>";
+                    echo "</div>";
+                 }  ?>  
      <?php     
     }elseif($do == 'add'){ ?>
        
@@ -349,7 +362,29 @@ if (isset($_SESSION['usersession'])) {
      
     }elseif($do=='Delete'){
 
-   
+    // delete Category page 
+     // using short if condion to chick if categoryid  is numeric and get the integer value of it 
+     echo '<h1 class="text-center"> Delete  Category</h1>';
+     echo '<div class="container">';
+     $catid=isset($_GET['catid'])&& is_numeric($_GET['catid']) ? intval($_GET['catid']):0;
+       
+     // select all data from db using this  id
+    //  $stmt=$con->prepare("SELECT  *  FROM   categories WHERE  id= ? ");
+     $check=checkItem('id' , 'categories' , $catid);      
+     // if there is such id show this form 
+     if ($check>0){
+         $stmt=$con->prepare("DELETE FROM categories WHERE id =:zcatid");
+         
+         $stmt->bindParam(":zcatid" , $catid);
+         $stmt->execute();
+         $theMsg= "<div class='alert alert-success'>" . $stmt->rowcount() .'   ' .'record Deleted</div>';
+         redirectFunction($theMsg , 'back' );
+
+     }else{
+        $theMsg= "<div class = 'alert alert-danger'>This Id Is Not Exist</div>";
+        redirectFunction($theMsg );
+     }
+     echo '</div>';
 }
                // end manage page
     include $tpl . 'footer.php';

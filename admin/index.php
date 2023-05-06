@@ -1,4 +1,6 @@
 <?php
+
+ob_start();
 session_start();
 // print_r($_SESSION);
 $nonavbar='';
@@ -40,6 +42,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     if($row > 0 ){
         $_SESSION['usersession']= $username;//register session name
         $_SESSION['ID']= $doFetch['id'];//register session id
+        header('Location: dashboard.php'); // Redirect To Dashboard Page
         exit;
     }
 

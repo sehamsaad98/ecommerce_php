@@ -68,7 +68,18 @@ min-width: 180px ;
    font-size: 16px;
    color: white;
    border-radius: 10px;
+   position: relative;
+   overflow: hidden;
 
+}
+.home-stats .stat i{
+   position: absolute;
+   font-size: 96px;
+   top: 30px;
+   left: 30px;
+}
+.home-stats .stat .info{
+   float: right;
 }
 .home-stats .stat a{
    color: #fff;
@@ -94,6 +105,14 @@ color: white;
 .latest{
    margin-top: 30px;
 }
+.latest .toggle-info {
+   cursor: pointer;
+   font-weight: bold;
+   color:#999
+}
+.latest .toggle-info:hover{
+   color:#444
+}
 .latest-users{
    margin-bottom: 0px;
 }
@@ -118,6 +137,38 @@ color: white;
    padding: 0px 8px;
    margin-right: 3px;
 }
+.latest .box-comment {
+   margin: 5px 0 10px;
+}
+.latest .box-comment .member-name ,
+.latest .box-comment .member-com{
+   float: left;
+}
+.latest .box-comment .member-name{
+   margin-right: 20px;
+   width: 80px;
+   text-align: center;
+}
+
+.latest .box-comment  .member-com {
+   width: calc(100% - 100px);
+   background-color: #EFEFEF;
+   padding: 10px;
+   position: relative;
+}
+.latest .box-comment  .member-com::before{
+   content: '';
+   position :absolute;
+   display:block;
+   left: -30px;
+   top: 5px;
+   width: 0;
+   height: 0;
+   border-style: solid;
+   border-color: transparent #EFEFEF transparent transparent;
+   border-width:15px;
+
+}
 /* end Dashboard page  */
 
 /* start members */
@@ -136,10 +187,10 @@ h1{
    transform: translate(0,-50%);
    top: 50%;
    cursor: pointer;
-}
-.fa-eye{
    color: rgb(151, 147, 147);
+
 }
+
 
 .main-table{
    box-shadow: 0 3px 20px #ccc;
@@ -169,12 +220,26 @@ font-weight: bold;
 .categories .card-body{
    padding:0px;
 }
-.categories .ordering a {
+.categories .card-header{
+   font-weight: bold;
+   color: #959595;
+}
+.categories .card-header i{
+ position: relative;
+ top:1px;
+}
+.categories .option a {
    color:gray;
    text-decoration: none;
    font-weight: bold;
 }
-.categories .ordering  .active {
+.categories .option span {
+   color:gray;
+   text-decoration: none;
+   font-weight: bold;
+   cursor: pointer;
+}
+.categories .option  .active {
    color:#eb4d4b;
 }
 .categories .cat{
@@ -201,12 +266,18 @@ font-weight: bold;
    margin-right: 5px;
 }
 .categories hr{
-   margin-top: 5px;
-   margin-bottom: 5px;
+   margin-top: 0px;
+   margin-bottom: 0px;
 }
 .categories .cat h3{
-   margin: 0 0 10px;
+   margin: 0 px;
+   cursor: pointer;
+   font-weight: bold;
+   color:#575353;
  
+}
+.categories .cat .full-view p{
+   padding-top: 10 0px;
 }
 .categories .cat hr{
    border-top:3px dashed;
@@ -232,5 +303,9 @@ font-weight: bold;
 .categories .cat .ads{
    background-color:#30336b;
 
+}
+.categories .add-category{
+   margin-top: 11px;
+   margin-bottom: 30px;
 }
 /* end Category Page  */

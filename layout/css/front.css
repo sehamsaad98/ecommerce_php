@@ -1,0 +1,343 @@
+/* start main rules */
+body{
+   /* background-color: rgb(240, 238, 238) !important; */
+   font-size: 16px!important;
+   font-family: 'Nunito Sans', sans-serif;
+   box-sizing: border-box !important;
+   font-family: 'Nunito Sans', sans-serif;
+   font-family: 'Teko', sans-serif;
+   
+   
+   
+}
+.asterisk{
+   color: red;
+   font-size: 40px;
+   position: absolute;
+   right:30px;
+   top:8px;
+}
+
+h1{
+   font-size: 55px !important;
+   margin: 20px 0px  !important;
+   font-weight: bolder   !important;
+
+}
+/* end main rule */
+
+
+/* start bootstrap edits */
+/* navbar start */
+header{
+   position: relative;
+   padding: 0 ;
+
+}
+.navbar{
+   width: 100%;
+   height: 60px;
+   padding: 0 3rem;
+   /* max-width: 1200px; */
+   margin:0 auto;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   position: fixed;
+   background-color: white;
+   margin-left: 0;
+   margin-top: 4px;
+   box-shadow: 2px 2px silver;
+
+}
+
+.navbar .logo a{
+   font-size: 18px;
+}
+.navbar .links{
+   display: flex;
+   gap: 2rem;
+
+}
+.navbar .toggle_btn{
+   font-size: 1.5rem;
+   cursor: pointer;
+   display: none;
+   
+}
+
+.navbar .toggle_btn:hover{
+   color: rgba(191, 45, 45, 0.9) ;
+}
+
+header a:hover{
+   color: rgba(191, 45, 45, 0.9) ;
+   /* font-size: 20px; */
+   font-weight: bold;
+
+}
+
+.action_btn{
+   background-color:  rgba(191, 45, 45, 0.9) ;
+   color:white;
+   padding: 0.5rem 1rem;
+   border:none;
+   outline: none;
+   border-radius: 20px;
+   font-size: 0.8rem;
+   font-weight: bold;
+   cursor: pointer;
+   transition: scale 0.2 ease;
+   margin: 0 !important;
+
+}
+.action_btn:hover{
+   color :#dbd3d3;
+   scale: 0.9
+}
+.action_btn:active{
+   scale: 0.7;
+}
+header li{
+   list-style: none;
+}
+ 
+header a {
+   text-decoration: none;
+   color: #222;
+   font-size: 1rem;
+
+}
+/* dropdown-menu */
+.dropdown_menu{
+   display: none;
+   position: absolute;
+   right: 2rem;
+   top:60px;
+   width: 300px;
+   height: 0;
+   background: rgba(255, 255, 255, 0.1);
+   backdrop-filter: blur(14px);
+   /* background: #e7e2e2; */
+   border-radius: 10px;
+   overflow: hidden;
+   margin-bottom: auto;
+   transition: height 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) ;
+   z-index: 1;
+}
+.dropdown_menu.open{
+   /* height: 290px; */
+   height: auto;
+}
+.dropdown_menu .action_btn{
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   /* transition: scale 0.2 ease; */
+}
+.dropdown_menu li{
+   padding: 0.7rem;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+/* responsive design */
+@media(max-width :992px){
+   .navbar .links,
+   .navbar .action_btn{
+      display: none;
+   }
+   .navbar .toggle_btn{
+      display:block ;
+   }
+   .dropdown_menu{
+      display: block;
+   }
+}
+
+
+
+/* start bootstrap edits */
+/* Start Categories Page  */
+.categories {
+   margin-top: 55px;
+}
+
+.container .col {
+   margin-top: 15px !important;
+  
+}
+
+.container .col i {
+   text-align: end;
+}
+.item-box{
+   position: relative;
+} 
+.item-box .price-tag{
+   position: absolute;
+   font-weight: bold;
+   background: #e3d6d6;
+   padding: 3px;
+   margin-top: 23px;
+}
+.item-box .favorit i {
+   position: absolute;
+   float: end;
+}
+
+
+
+/* End Categories Page  */
+/* start Login Page  */
+/* .intro {
+  position: relative;
+  text-align: center;
+  margin-top: 0; 
+   width: 100%;
+   height: 100%;
+}*/
+ .bottom-left {
+   top: 443px;
+   left: 24px;
+}
+
+.intro .container-fluid{
+   background-color: #f3f3f3;
+   height: 804px;
+   background-size: cover;
+   
+}
+.intro .row{
+   width: 100%;
+}
+
+.text .fc{
+   letter-spacing: 3px;
+   font-family: sans-serif;
+   font-size: 45px;
+   position:inline;
+   padding-top: 220px;
+   padding-left: 40px;
+}
+.intro input[type="text"],
+.intro input[type="password"],
+.intro input[type="email"]
+{
+   width: 240px;
+   height: 35px;
+   outline: none;
+   border: 0.5px solid #222;
+   border-radius: 5px;
+   margin-bottom:10px;
+   margin-top: 0px;
+   font-size: 16px;
+   padding-left: 10px;
+}
+/* input:focus{
+   .asterisk:display: none;
+} */
+.input-container
+{
+   position: relative;
+}
+.asterisk{
+   color: #d11919;
+   font-size: 28px;
+   position: absolute;
+   right: 109px;
+   top: 24px;
+
+}
+
+.button-login{
+   padding-top: 8px;
+   padding-bottom: 8px;
+   padding-left: 60px;
+   padding-right: 60px;
+   font-size: 16px;
+   color:#bbb;
+   text-decoration: none;
+   border-radius: 10px;
+   background-color: #666;
+   margin-left:35px;
+   margin-top:20px;
+   text-align: center;
+}
+.button-login:hover{
+   box-shadow: 5px 5px 10px #999;
+   color:#fff;
+}
+
+.modal-title{
+   margin-left: 140px;
+   font-size: 40x;
+   letter-spacing: 2px;
+   font-weight: bold;
+}
+.modal-body{
+   margin-left: 120px;
+}
+.btn-login{
+   margin-top: 10px;
+   width: 240px;
+}
+.foot{
+   margin-bottom: 20px;
+}
+.new-acc{
+   text-decoration: none;
+   position: relative;
+   font-size: 16px;
+   color:gray;
+   top:20px;
+}
+.new-acc:hover{
+   color:#ff0000;
+}
+/* End Login Page  */
+/* Start Profile Page  */
+.block{
+   margin:20px 0 0 ;
+}
+.information .card-header  {
+   background-color: #94BECF !important;
+   color: white;
+}
+.information ul{
+   margin:0;
+   padding:0;
+}
+.information ul {
+   padding: 10px;
+}
+.information ul li{
+   margin: 0;
+}
+.information ul li:nth-child(odd){
+   background-color:#efeaea;
+}
+.information ul li span{
+   display: inline-block;
+   width: 100px;
+}
+.adv .my-adv {
+   background-color:#94BECF  ;
+   color: white;
+   font-weight: bold;
+   font-size: larger;
+}
+ .card .date{
+   text-align:right !important;
+   font-size: 13px;
+   color: #aaa;
+   font-weight: bold ;
+ }
+/* End Profile Page  */
+/* Start New Ad page */
+.new-ad{
+   background-color: #94BECF !important;
+   color: #f3f3f3;
+}
+
+/* Ebd New Ad page */

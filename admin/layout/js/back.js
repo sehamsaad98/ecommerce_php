@@ -4,7 +4,16 @@
 $(function(){
  "use strict";
 
+//dashboard
+$('.toggle-info').click(function(){
+    $(this).toggleClass('selected').parent().next('.list-group').fadeToggle(200);
+    if ($(this).hasClass('selected')){
+        $(this).html('<i class="fa-sharp fa-solid fa-minus fa-lg"></i>');
+    }else{
+        $(this).html('<i class="fa-sharp fa-solid fa-plus fa-lg"></i>');
 
+    }
+});
 
 
  //add asterisk on required field 
@@ -32,4 +41,22 @@ $('.show-pass').hover(function(){
     $('.confirm').click(function(){
         return confirm('are you sure');
     });
+
+// category view options
+
+$('.cat h3').click(function () {
+
+    $(this).next('.full-view').fadeToggle(200);
+
+});
+
+$('.option span').click(function(){
+   $(this).addClass('active').siblings('span').removeClass('active');
+   if($(this).data('view')==='full'){
+    $('.cat .full-view').fadeIn(200);
+   }else{
+    $('.cat .full-view').fadeOut(200);
+   }
+});
+
 });

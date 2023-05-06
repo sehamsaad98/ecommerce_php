@@ -74,7 +74,7 @@ function countItmes($item ,$table){
 */
 function getLatest($select , $table , $order, $limit= 5 ){
     global $con ;
-    $getStmt = $con->prepare("SELECT $select FROM $table ORDER BY $order DESC  LIMIT $limit");
+    $getStmt = $con->prepare("SELECT $select FROM $table  ORDER BY $order DESC  LIMIT $limit ");
     $getStmt->execute();
     $rows= $getStmt->fetchAll();
     return $rows ;

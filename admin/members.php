@@ -24,13 +24,13 @@ if (isset($_SESSION['usersession'])) {
         $query='AND regStatus = 0';
        }
         // Select All Users Except Admin
-    $stmt=$con->prepare("SELECT * FROM users WHERE groupid != 1 $query");
+    $stmt=$con->prepare("SELECT * FROM users WHERE groupid != 1 $query ORDER BY  id DESC ");
     // excute the statement
     $stmt->execute();
     // assign to variabels
     $rows=$stmt->fetchAll();
 
-    
+    if (! empty($rows)){
     ?>
     <h1 class="text-center"> Manage Members</h1>
             <div class="container ">
@@ -65,10 +65,14 @@ if (isset($_SESSION['usersession'])) {
 
                     </table>
                 </div>
-
-  <a href='members.php?do=add' class="btn btn-primary"><i class="fa fa-plus"></i> add  member </a>
+             <a href='members.php?do=add' class="btn btn-primary"><i class="fa fa-plus"></i> add  member </a>
             </div>
- 
+            <?php }else{
+                    echo "<div class='container'>";
+                    echo "<div class='alert alert-info fw-bold text-center'>There Is No  Record To Show  </div>";
+                    echo "<a href='members.php?do=add' class='btn btn-primary'><i class='fa fa-plus'></i> add  member </a>";
+                    echo "</div>";
+                 }  ?>        
 
     <!-- end manage page design -->
    <?php }elseif($do == 'add'){
@@ -120,7 +124,8 @@ if (isset($_SESSION['usersession'])) {
                      <!-- ens submit input -->
                 </form>
             </div>
-    <?php
+
+    <?php 
     }elseif($do == 'insert'){
         if($_SERVER['REQUEST_METHOD']=='POST'){
             echo '<h1 class="text-center"> update  Members</h1>';
@@ -187,7 +192,7 @@ if (isset($_SESSION['usersession'])) {
         }else{
             echo "<div class='container'>";
             $theMsg ='<div class ="alert alert-danger ">sorry you cant prows this page directly</div>';
-            redirectFunction($theMsg , 'back' );
+            redirectFunction($theMsg );
             echo "</div>";
         }
         echo '</div>';   
@@ -298,11 +303,27 @@ if (isset($_SESSION['usersession'])) {
             // if there is no error proceed the update operation
             // update db with this info
             if (empty($formerror)){
-                $stmt = $con->prepare("UPDATE users SET username = ? ,email = ? , fullname = ? , password = ? WHERE id = ?");
+                $stmt2 = $con->prepare('SELECT
+                                          *
+                                        FROM
+                                          users 
+                                        WHERE
+                                          username=?
+                                        AND
+                                          id !=?');
+                $stmt2->execute(array($user , $id));
+                $count= $stmt2->rowCount();
+                if($count == 1){
+                    $theMsg= '<div class ="alert alert-danger">sorry this user is exist</div>';
+                    redirectFunction($theMsg , 'back' );
+                }else{
+                     $stmt = $con->prepare("UPDATE users SET username = ? ,email = ? , fullname = ? , password = ? WHERE id = ?");
                 $stmt->execute(array($user , $email , $fullname, $pass, $id  ));
                //echo success message 
                $theMsg = "<div class='alert alert-success'>" . $stmt->rowcount() .'   ' .'record updated</div>';
-                redirectFunction($theMsg , 'back' , 4 );
+                redirectFunction($theMsg , 'back' , 4 ); 
+                }
+
             }
        
         }else{

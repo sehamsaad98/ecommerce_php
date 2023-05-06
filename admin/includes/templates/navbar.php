@@ -8,8 +8,9 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link " aria-current="page" href="categories.php"> <?php echo lang('Categories')?></a></li> 
                     
-                <li class="nav-item"><a class="nav-link " aria-current="page" href="#"> <?php echo lang('Items')?></a> </li>
+                <li class="nav-item"><a class="nav-link " aria-current="page" href="items.php"> <?php echo lang('Items')?></a> </li>
                 <li class="nav-item"><a class="nav-link " aria-current="page" href="members.php"> <?php echo lang('Members')?></a> </li>
+                <li class="nav-item"><a class="nav-link " aria-current="page" href="comments.php"> <?php echo lang('Comments')?></a> </li>
                 <li class="nav-item"><a class="nav-link " aria-current="page" href="#"> <?php echo lang('statistics')?></a> </li>
                 <li class="nav-item"><a class="nav-link " aria-current="page" href="#"> <?php echo lang('Logs')?></a> </li>
 
@@ -21,6 +22,7 @@
                         seham
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                       <li><a class="dropdown-item" href="../index.php"> visit shop</a></li>
                         <li><a class="dropdown-item" href="members.php?do=edit&userid=<?php echo $_SESSION['ID']?>"><?php echo lang('Edit_Profile')?></a></li>
                         <li><a class="dropdown-item" href="#"><?php echo lang('Settings')?></a></li>
                         <li><a class="dropdown-item" href="logout.php"> <?php echo lang('Logout')?></a></li>
