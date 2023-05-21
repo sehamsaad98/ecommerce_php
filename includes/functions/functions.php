@@ -2,31 +2,26 @@
 // user function page start
 
 /*
-** Get Categories  Function 
-**Function Tp Get  Categories From Database 
+** Get All  Function 
+**Function Tp Get  All Records  From Any Database Table  
 */
-function getCat( ){
+function getAll( $field ,$table , $where = NULL,$and=NULL, $orderfield=NULL  , $ordering= 'DESC' ){
     global $con ;
-    $getCat = $con->prepare("SELECT * FROM categories  ORDER BY id ASC  ");
-    $getCat->execute();
-    $cats= $getCat->fetchAll();
-    return $cats ;
+    // if($where = NULL){
+    //     $sql = '' ;
+    // }else{
+    //     $sql = $where ;
+    // }
+
+    $getAll = $con->prepare("SELECT $field FROM $table $where $and ORDER BY $orderfield $ordering ");
+    $getAll->execute();
+    $records= $getAll->fetchAll();
+    return $records ;
 }
 
 
 
 
-/*
-** Get Items  Function 
-**Function Tp Get  Items From Database 
-*/
-function getItems($where ,$value ){
-    global $con ;
-    $getItems = $con->prepare("SELECT * FROM items WHERE $where =?  ORDER BY id ASC  ");
-    $getItems->execute(array($value));
-    $items= $getItems->fetchAll();
-    return $items ;
-}
 
 /*
 ** Check if user is not Active 

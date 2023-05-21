@@ -58,5 +58,11 @@ $('.option span').click(function(){
     $('.cat .full-view').fadeOut(200);
    }
 });
+// show delete button on child cats 
+$('.child-link').hover(function(){
+    $(this).find('.show-delete').fadeIn();
+},function(){
+    $(this).find('.show-delete').fadeOut();
 
+ });
 });

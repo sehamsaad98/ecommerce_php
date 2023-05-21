@@ -47,6 +47,7 @@ if (isset($_SESSION['usersession'])) {
                 <table class="table table-bordered main-table text-center ">
                     <tr class="">
                         <td>#ID</td>
+                        <td>Image</td>
                         <td>name</td>
                         <td>Description</td>
                         <td> Price</td>
@@ -61,6 +62,7 @@ if (isset($_SESSION['usersession'])) {
                     <?php foreach ($items as $item) {
                         echo "<tr>";
                         echo "<td>" . $item['id'] . "</td>";
+                        echo"<td><img src='images/items/ " . $item['image'] . "' style='width:80px;height:50px;'> </a></td>";
                         echo "<td>" . $item['name'] . "</td>";
                         echo "<td>" . $item['description'] . "</td>";
                         echo "<td>" . $item['price'] . "</td>";
@@ -99,7 +101,7 @@ if (isset($_SESSION['usersession'])) {
         <!--  add Items page  -->
         <h1 class="text-center"> Add New Item</h1>
         <div class="container contform ">
-            <form action="items.php?do=insert" method="POST" class="form-horizontal ">
+            <form action="items.php?do=insert" method="POST" class="form-horizontal " enctype="multipart/form-data">
                 <!-- start Name input -->
                 <div class="mb-3  row p-0">
                     <label class="col-sm-1  col-form-label ">Name</label>
@@ -132,6 +134,14 @@ if (isset($_SESSION['usersession'])) {
                     </div>
                 </div>
                 <!-- end Country input -->
+                <!-- start item image  input -->
+                   <div class="mb-3  row">
+                        <label for="inputPassword" class="col-sm-1  col-form-label">Item Image</label>
+                        <div class="col-sm-10 col-md-5 ">
+                            <input type="file" class="form-control form-control-lg " name="image" placeholder=" Choose your image "  >
+                        </div>
+                    </div>
+                <!-- end item image  input -->
                 <div class="mb-3  row p-0">
                     <label class="col-sm-1  col-form-label ">Status</label>
                     <div class="col-sm-10 col-md-5">
@@ -152,10 +162,9 @@ if (isset($_SESSION['usersession'])) {
                     <div class="col-sm-10 col-md-5">
                         <select name="member" class="form-control form-control-lg ">
                             <option value="0">...</option>
-                            <?php $stmt = $con->prepare('SELECT * FROM users');
-                            $stmt->execute();
-                            $users = $stmt->fetchAll();
-                            foreach ($users as $user) {
+                            <?php
+                            $allUsers = getAll("*" , "users" , "" , "" ,"id" );
+                            foreach ($allUsers as $user) {
                                 echo "<option value='" . $user['id'] . " '> " . $user['username'] . "</option>";
                             }
                             ?>
@@ -169,17 +178,31 @@ if (isset($_SESSION['usersession'])) {
                     <div class="col-sm-10 col-md-5">
                         <select name="category" class="form-control form-control-lg ">
                             <option value="0">...</option>
-                            <?php $stmt2 = $con->prepare('SELECT * FROM categories');
-                            $stmt2->execute();
-                            $cats = $stmt2->fetchAll();
-                            foreach ($cats as $cat) {
+                            <?php 
+                            $allcats = getAll("*" , "categories" , "where parent= 0" , "" ,"id" );
+                            foreach ($allcats as $cat) {
+                                echo '<hr class>';
                                 echo "<option value='" . $cat['id'] . " '> " . $cat['name'] . "</option>";
+                                $childcat = getAll("*" , "categories" , "where parent= {$cat['id']}" , "" ,"id" );
+                                foreach($childcat as $child){
+                                    echo "<option value='" . $child['id'] . " '> ----" . $child['name'] .' is  '.$cat['name']. "'s child</option>";
+                                    echo '<hr>';
+                                }
+
                             }
                             ?>
                         </select>
                     </div>
                 </div>
                 <!-- End mCategories input-->
+                <!-- start Tags input -->
+                <div class="mb-3  row p-0">
+                    <label class="col-sm-1  col-form-label ">Tags</label>
+                    <div class="col-sm-10 col-md-5  ">
+                        <input type="text" class="form-control form-control-lg " name="tags" placeholder="separate tags with comma (,)">
+                    </div>
+                </div>
+                <!-- end Tags input -->
                 <!-- start submit input -->
                 <div class="mb-3  row">
                     <div class=" offset-sm-1 col-sm-10">
@@ -195,6 +218,17 @@ if (isset($_SESSION['usersession'])) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo '<h1 class="text-center"> Insert  Items</h1>';
             echo '<div class="container">';
+            //uploade variables
+            $imageName=$_FILES['image']['name'];
+            $imageSize=$_FILES['image']['size'];
+            $imageType=$_FILES['image']['type'];
+            $imageTmp= $_FILES['image']['tmp_name'];
+            $imageAllowedExtentions=array("jpeg" , "jpg" , "gif" ,"png" );
+            // to get image extention using explode
+            $typ =explode('.', $imageName);
+            $endOfimagename= end($typ);
+            $imageExtention = strtolower($endOfimagename);
+
 
             // get variables from the form 
             $name    = $_POST['name'];
@@ -202,8 +236,10 @@ if (isset($_SESSION['usersession'])) {
             $price   = $_POST['price'];
             $country = $_POST['country'];
             $status  = $_POST['status'];
-            $cat      = $_POST['category'];
+            $cat     = $_POST['category'];
             $member  = $_POST['member'];
+            $tags    = $_POST['tags'];
+
 
 
             // validate the form
@@ -230,17 +266,27 @@ if (isset($_SESSION['usersession'])) {
             if ($member == 0) {
                 $formerror[] = "You Must Choose the <strong>Member</strong>";
             }
+            if( empty($imageName) ){
+                $formerror[]= " sorry image can't be <strong>empty </strong>";
+            }
+            if( !empty($imageName) && ! in_array($imageExtention ,$imageAllowedExtentions)){
+                $formerror[]= " sorry this Extention is not  <strong>Allowed </strong>";
+            }
+            if( $imageSize >4194304){
+                $formerror[]= " sorry image can't be more than <strong>4 MB</strong>";
+            }
             foreach ($formerror as $error) {
                 echo "<div class='alert alert-danger'>" .  $error  . "</div>";
             }
             // if there is no error proceed the insert operation
             // insert into db 
             if (empty($formerror)) {
-
+                $image = rand(0, 10000000000) . '_' . $imageName;
+                move_uploaded_file($imageTmp , "images\items\\ ". $image) ;  
                 //insert info in db
                 $stmt = $con->prepare("INSERT INTO 
-                                          items (name, description , price , country_made, status , add_date ,cat_id, member_id) 
-                                    VALUES (:zname, :zdesc, :zprice, :zcountry, :zstatus, now() , :zcat, :zmember)");
+                                          items (name, description , price , country_made, status , add_date ,cat_id, member_id , tags ,image) 
+                                    VALUES (:zname, :zdesc, :zprice, :zcountry, :zstatus, now() , :zcat, :zmember, :ztags ,:zimage)");
                 $stmt->execute(array(
                     'zname'     => $name,
                     'zdesc'     => $desc,
@@ -248,7 +294,10 @@ if (isset($_SESSION['usersession'])) {
                     'zcountry'     => $country,
                     'zstatus'     => $status,
                     'zcat'        => $cat,
-                    'zmember'    => $member
+                    'zmember'    => $member,
+                    'ztags'    => $tags,
+                    'zimage'=> $image
+
                 ));
                 //echo success message 
                 $theMsg = "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Inserted</div>';
@@ -280,7 +329,7 @@ if (isset($_SESSION['usersession'])) {
             <!--  edit Items page  -->
             <h1 class="text-center"> Edit Item</h1>
             <div class="container contform ">
-                <form action="items.php?do=update" method="POST" class="form-horizontal ">
+                <form action="items.php?do=update" method="POST" class="form-horizontal " enctype="multipart/form-data">
                     <input type="hidden" value="<?php echo $item_id ?>" name="item_id">
 
                     <!-- start Name input -->
@@ -315,7 +364,16 @@ if (isset($_SESSION['usersession'])) {
                         </div>
                     </div>
                     <!-- end Country input -->
-                    <div class="mb-3  row p-0">
+                    <!-- start item image  input -->
+                    <div class="mb-3  row">
+                            <label for="inputPassword" class="col-sm-1  col-form-label">Item Image</label>
+                            <div class="col-sm-10 col-md-5 ">
+                              <input type="hidden" name="old_image" value="<?php echo $item['image'] ?>">
+                                <input type="file" class="form-control form-control-lg " name="image"  value="<?php echo $item['image'] ?>" > <span name="image" value="<? echo $item['image']?>">
+                            </div>
+                        </div>
+                    <!-- end item image  input -->
+                        <div class="mb-3  row p-0">
                         <label class="col-sm-1  col-form-label ">Status</label>
                         <div class="col-sm-10 col-md-5">
                             <select name="status" class="form-control form-control-lg ">
@@ -341,10 +399,9 @@ if (isset($_SESSION['usersession'])) {
                         <label class="col-sm-1  col-form-label ">Member</label>
                         <div class="col-sm-10 col-md-5">
                             <select name="member" class="form-control form-control-lg ">
-                                <?php $stmt = $con->prepare('SELECT * FROM users');
-                                $stmt->execute();
-                                $users = $stmt->fetchAll();
-                                foreach ($users as $user) {
+                                <?php
+                            $allUsers = getAll("*" , "users" , "" , "" ,"id" );
+                                foreach ($allUsers as $user) {
                                     echo "<option value='" . $user['id'] . " '";
                                     if ($item['member_id'] == $user['id']) {
                                         echo 'selected';
@@ -361,10 +418,9 @@ if (isset($_SESSION['usersession'])) {
                         <label class="col-sm-1  col-form-label ">Categories</label>
                         <div class="col-sm-10 col-md-5">
                             <select name="category" class="form-control form-control-lg ">
-                                <?php $stmt2 = $con->prepare('SELECT * FROM categories');
-                                $stmt2->execute();
-                                $cats = $stmt2->fetchAll();
-                                foreach ($cats as $cat) {
+                                <?php 
+                                $allcats = getAll("*" , "categories" , "where parent= 0" , "" ,"id" );
+                                foreach ($allcats as $cat) {
                                     echo "<option value='" . $cat['id'] . " '";
                                     if ($item['cat_id'] == $cat['id']) {
                                         echo 'selected';
@@ -376,6 +432,14 @@ if (isset($_SESSION['usersession'])) {
                         </div>
                     </div>
                     <!-- End mCategories input-->
+                    <!-- start Tags input -->
+                    <div class="mb-3  row p-0">
+                        <label class="col-sm-1  col-form-label ">Tags</label>
+                        <div class="col-sm-10 col-md-5  ">
+                            <input type="text" class="form-control form-control-lg " name="tags" placeholder="separate tags with comma (,)"  value="<?php echo $item['tags'] ?> ">
+                        </div>
+                    </div>
+                    <!-- end Tags input -->
                     <!-- start submit input -->
                     <div class="mb-3  row">
                         <div class=" offset-sm-1 col-sm-10">
@@ -450,6 +514,19 @@ if (isset($_SESSION['usersession'])) {
         echo '<h1 class="text-center"> update  Items</h1>';
         echo '<div class="container">';
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            //uploade variables
+            $old_image =$_POST['old_image'];
+
+            $imageName=$_FILES['image']['name'];
+            $imageSize=$_FILES['image']['size'];
+            $imageType=$_FILES['image']['type'];
+            $imageTmp= $_FILES['image']['tmp_name'];
+            $imageAllowedExtentions=array("jpeg" , "jpg" , "gif" ,"png" );
+            // to get image extention using explode
+            $typ =explode('.', $imageName);
+            $endOfimagename= end($typ);
+            $imageExtention = strtolower($endOfimagename);
+
             $id = $_POST['item_id'];
             $name    = $_POST['name'];
             $desc    = $_POST['description'];
@@ -458,6 +535,8 @@ if (isset($_SESSION['usersession'])) {
             $status  = $_POST['status'];
             $cat      = $_POST['category'];
             $member  = $_POST['member'];
+            $tag    = $_POST['tags'];
+            
             // validate the form
             $formerror = array();
             if (empty($name)) {
@@ -482,16 +561,29 @@ if (isset($_SESSION['usersession'])) {
             if ($member == 0) {
                 $formerror[] = "You Must Choose the <strong>Member</strong>";
             }
+
+            if( !empty($imageName) && ! in_array($imageExtention ,$imageAllowedExtentions)){
+                $formerror[]= " sorry this Extention is not  <strong>Allowed </strong>";
+            }
+            if( $imageSize >4194304){
+                $formerror[]= " sorry image can't be more than <strong>4 MB</strong>";
+            }
             foreach ($formerror as $error) {
                 echo "<div class='alert alert-danger'>" .  $error  . "</div>";
             }
             // if there is no error proceed the insert operation
             // insert into db 
             if (empty($formerror)) {
-
+                if(empty($imageName)){
+                    $image=$old_image ;
+                }else
+                {
+                $image = rand(0, 10000000000) . '_' . $imageName;
+                move_uploaded_file($imageTmp , "images\items\\ ". $image) ;
+                } 
                 //insert info in db
-                $stmt = $con->prepare("UPDATE items SET name = ? ,description = ? , price  = ? , country_made=? , status=? , cat_id=? , member_id = ? WHERE id = ?");
-                $stmt->execute(array($name, $desc, $price, $country, $status, $cat, $member, $id));
+                $stmt = $con->prepare("UPDATE items SET name = ? ,description = ? , price  = ? , country_made=? , status=? , cat_id=? , member_id = ? ,tags = ?,image=? WHERE id = ?");
+                $stmt->execute(array($name, $desc, $price, $country, $status, $cat, $member,$tag, $image, $id  ));
                 //echo success message 
                 $theMsg = "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Updated</div>';
 

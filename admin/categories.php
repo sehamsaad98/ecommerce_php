@@ -24,7 +24,7 @@ if (isset($_SESSION['usersession'])) {
         if(isset($_GET['sort'])&& in_array($_GET['sort'], $sort_array)){
             $sort =$_GET['sort'] ;
         }
-     $stmt2 =$con->prepare("SELECT * FROM categories ORDER BY ordering $sort");
+     $stmt2 =$con->prepare("SELECT * FROM categories WHERE parent = 0 ORDER BY ordering $sort");
      $stmt2->execute();
      $cats=$stmt2->fetchAll();
      if(!empty($cats)){?>
@@ -61,9 +61,24 @@ if (isset($_SESSION['usersession'])) {
                                 if ($category['visibility'] ==1){ echo "<span class='visibility comon-span'><i class='fa-regular fa-eye-slash'></i> Hidden</span> ";}
                                 if ($category['allow_comment'] ==1){ echo "<span class='comment comon-span'><i class='fa fa-close'></i> Comment Disabled </span> ";}
                                 if ($category['allow_ads'] ==1){ echo "<span class='ads comon-span'> <i class='fa fa-close'></i>Advertise Disabled </span> ";}
-                            echo "</div>";
+                          $childCat=getAll('*','categories' , "WHERE parent = {$category['id']}", '' ,'id' , 'ASC');
+                          if(!empty($childCat)){
+                            echo '<h4 class="child-head"> Child Categories </h4>';
+                            echo  '<ul class="list-unstyled child-cats">';
+                          foreach($childCat as $c){
+                             echo "<li class='child-link'><a href='categories.php?do=edit&catid=".$c['id']."'  >" .$c['name']. "</a>
+                             <a href='categories.php?do=Delete&catid=".$c['id'] ."' class='confirm show-delete ms-2'> Delete</a>
+                             </li>";
+                         }
+                         echo '</ul>';
+                        }                               
                           echo"</div>";
-                          echo"<hr>";
+                        //   echo"<hr>";                                
+                            echo "</div>";
+                          //get child category 
+
+                       
+                        echo"<hr>";
                         }
                         ?></div>
                 </div>
@@ -99,6 +114,22 @@ if (isset($_SESSION['usersession'])) {
                         </div>
                     </div>
                      <!-- end description input -->
+                     <!-- start Category type input -->
+                     <div class="mb-3  row">
+                        <label for="categorytype" class="col-sm-1  col-form-label">Category Type</label>
+                        <div class="col-sm-10 col-md-5" >
+                        <select name="parent" class="form-control form-control-lg ">
+                            <option value="0">None</option>
+                            <?php 
+							$allCats = getAll("*", "categories", "where parent = 0", "", "id", "ASC");
+                            foreach($allCats as $cat){
+                                echo '<option value="'. $cat['id'].'" > ' .$cat['name'].'</option>';
+                            }
+                              ?>
+                          </select>
+                        </div>
+                    </div>
+                     <!-- end  Category type input -->
                     <!-- start ordering input -->
                     <div class="mb-3  row">
                         <label for="inputPassword" class="col-sm-1  col-form-label">Ordering</label>
@@ -169,7 +200,8 @@ if (isset($_SESSION['usersession'])) {
 
             // get variables from the form (from ths name of the input )
             $name= $_POST['name'];
-            $desc=$_POST['description'];           
+            $desc=$_POST['description'];
+            $catType=$_POST['parent'];                      
             $order= $_POST['ordering'];
             $visible= $_POST['visibilty'];
             $comment= $_POST['commenting'];
@@ -188,11 +220,12 @@ if (isset($_SESSION['usersession'])) {
                 }else{
                //insert info in db
                $stmt=$con->prepare("INSERT INTO 
-                                          categories (name, description , ordering , visibility,allow_comment, allow_ads) 
-                                    VALUES (:zname , :zdesc , :zorder , :zvisible ,:zcomment, :zads)");
+                                          categories (name, description , parent ,ordering , visibility,allow_comment, allow_ads) 
+                                    VALUES (:zname , :zdesc, :zparent , :zorder , :zvisible ,:zcomment, :zads)");
                 $stmt->execute(array(
                     'zname'   => $name,
                     'zdesc'   => $desc,
+                    'zparent'   => $catType,
                     'zorder'  =>$order,
                     'zvisible'=>$visible,
                     'zcomment'=> $comment,
@@ -251,6 +284,24 @@ if (isset($_SESSION['usersession'])) {
                         </div>
                     </div>
                      <!-- end description input -->
+                     <!-- start Category type input -->
+                     <div class="mb-3  row">
+                        <label for="categorytype" class="col-sm-1  col-form-label">Category Type</label>
+                        <div class="col-sm-10 col-md-5" >
+                        <select name="parent" class="form-control form-control-lg ">
+                            <option value="0">None</option>
+                            <?php 
+							$allCats = getAll("*", "categories", "where parent = 0", "", "id", "ASC");
+                            foreach($allCats as $c){
+                                echo '<option value="'. $c['id'].'" ';
+                                 if($cat['parent']== $c ['id']){ echo "selected" ;}
+                                echo  '>' .$c['name'].'</option>';
+                            }
+                              ?>
+                          </select>
+                        </div>
+                    </div>
+                     <!-- end  Category type input -->
                     <!-- start ordering input -->
                     <div class="mb-3  row">
                         <label for="inputPassword" class="col-sm-1  col-form-label">Ordering</label>
@@ -329,7 +380,8 @@ if (isset($_SESSION['usersession'])) {
 
             $id= $_POST['catid'];    
             $name= $_POST['name'];
-            $desc=$_POST['description'];           
+            $desc=$_POST['description'];     
+            $catType=$_POST['parent'];                            
             $order= $_POST['ordering'];
             $visible= $_POST['visibilty'];
             $comment= $_POST['commenting'];
@@ -340,6 +392,7 @@ if (isset($_SESSION['usersession'])) {
                                    SET 
                                          name = ? ,
                                          description = ? , 
+                                         parent=?,
                                          ordering = ? , 
                                          visibility = ?  , 
                                          allow_comment=? , 
@@ -347,7 +400,7 @@ if (isset($_SESSION['usersession'])) {
                                          
                                   WHERE 
                                          id = ?");
-                $stmt->execute(array($name, $desc, $order, $visible, $comment, $ads, $id));
+                $stmt->execute(array($name, $desc,$catType, $order, $visible, $comment, $ads, $id));
                //echo success message 
                $theMsg = "<div class='alert alert-success'>" . $stmt->rowcount() .'   ' .'record updated</div>';
                 redirectFunction($theMsg , 'back' , 4 );

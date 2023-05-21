@@ -38,6 +38,7 @@ if (isset($_SESSION['usersession'])) {
                     <table class="table table-bordered main-table text-center ">
                         <tr class="">
                             <td>#ID</td>
+                            <td>Image</td>
                             <td>Username</td>
                             <td>Email</td>
                             <td>Full Name</td>
@@ -48,6 +49,7 @@ if (isset($_SESSION['usersession'])) {
                         <?php  foreach($rows as $row){
                             echo "<tr>";
                             echo"<td>" . $row['id'] . "</td>";
+                            echo"<td><img src='images/avatars/ " . $row['avatar'] . "' style='width:80px;height:80px;'> </a></td>";
                             echo"<td>" . $row['username'] . "</td>";
                             echo"<td>" . $row['email'] . "</td>";
                             echo"<td>" . $row['fullname'] . "</td>";
@@ -80,7 +82,7 @@ if (isset($_SESSION['usersession'])) {
             <!--  add members page  -->
             <h1 class="text-center"> add new Member</h1>
             <div class="container contform ">
-                <form action="members.php?do=insert" method="POST" class="form-horizontal ">
+                <form action="members.php?do=insert" method="POST" class="form-horizontal " enctype="multipart/form-data">
                     <!-- start Username input -->
                     <div class="mb-3  row p-0">
                         <label for="inputPassword" class="col-sm-1  col-form-label " autocomplete="off" >Username</label>
@@ -115,6 +117,14 @@ if (isset($_SESSION['usersession'])) {
                         </div>
                     </div>
                      <!-- ens Full name input -->
+                    <!-- start member image  input -->
+                    <div class="mb-3  row">
+                        <label for="inputPassword" class="col-sm-1  col-form-label">Member Image</label>
+                        <div class="col-sm-10 col-md-5 ">
+                            <input type="file" class="form-control form-control-lg " name="avatar" placeholder=" Choose your image "  >
+                        </div>
+                    </div>
+                     <!-- ens member image  input -->
                     <!-- start submit input -->
                     <div class="mb-3  row">
                         <div class=" offset-sm-1 col-sm-10">
@@ -130,7 +140,18 @@ if (isset($_SESSION['usersession'])) {
         if($_SERVER['REQUEST_METHOD']=='POST'){
             echo '<h1 class="text-center"> update  Members</h1>';
             echo '<div class="container">';
+            //uploade variables
+            $imageName=$_FILES['avatar']['name'];
+            $imageSize=$_FILES['avatar']['size'];
+            $imageType=$_FILES['avatar']['type'];
+            $imageTmp= $_FILES['avatar']['tmp_name'];
+            $imageAllowedExtentions=array("jpeg" , "jpg" , "gif" ,"png" );
+            // to get image extention using explode
+            $typ =explode('.', $imageName);
+            $endOfimagename= end($typ);
+            $imageExtention = strtolower($endOfimagename);
 
+            // echo $imageExtention;
             // get variables from the form (from ths name of the input )
             $user= $_POST['username'];
             $pass=$_POST['password'];           
@@ -159,6 +180,15 @@ if (isset($_SESSION['usersession'])) {
             if (empty($fullname)){
                 $formerror[]= " sorry full name con't be <strong>empty</strong>";
             }
+            if( empty($imageName) ){
+                $formerror[]= " sorry image can't be <strong>empty </strong>";
+            }
+            if( !empty($imageName) && ! in_array($imageExtention ,$imageAllowedExtentions)){
+                $formerror[]= " sorry this Extention is not  <strong>Allowed </strong>";
+            }
+            if( $imageSize >4194304){
+                $formerror[]= " sorry image can't be more than <strong>4 MB</strong>";
+            }
             foreach($formerror as $error){
                 echo "<div class='alert alert-danger'>" .  $error  . "</div>";
             }
@@ -166,7 +196,12 @@ if (isset($_SESSION['usersession'])) {
             // insert into db 
             if (empty($formerror)){
                 //Check If User Exist in database 
-       
+                echo 'good';
+                
+                // echo random name before image 
+                $image = rand(0, 10000000000) . '_' . $imageName;
+                 move_uploaded_file($imageTmp , "images\avatars\\ ". $image) ;               
+             
                 $check=checkItem("username", "users", $user);
                 if($check == 1 ){
                     $theMsg= "sorry this user is exist";
@@ -175,13 +210,14 @@ if (isset($_SESSION['usersession'])) {
                 }else{
                //insert info in db
                $stmt=$con->prepare("INSERT INTO 
-                                          users (username, password , fullname , email,regStatus, date) 
-                                    VALUES (:zuser , :zpass , :zfull , :zemail ,1, now())");
+                                          users (username, password , fullname , email,regStatus, date , avatar ) 
+                                    VALUES (:zuser , :zpass , :zfull , :zemail ,1, now() , :zimage)");
                 $stmt->execute(array(
                     'zuser' => $user,
                     'zpass'=> $hashpass,
                     'zfull'=>$fullname,
-                    'zemail'=> $email
+                    'zemail'=> $email,
+                    'zimage'=> $image
                 ));
                //echo success message 
                 $theMsg= "<div class='alert alert-success'>" . $stmt->rowcount() .'   ' .'record insert</div>';
@@ -216,7 +252,7 @@ if (isset($_SESSION['usersession'])) {
         <!-- echo 'welcom this is edit page your id =' . $_GET['userid']; -->
         <h1 class="text-center"> Edit Members</h1>
         <div class="container ">
-            <form action="members.php?do=update" method="POST" class="form-horizontal ">
+            <form action="members.php?do=update" method="POST" class="form-horizontal " enctype="multipart/form-data">
                 <input type="hidden" value="<?php echo $userid?>" name="userid">
                 <!-- start Username input -->
                 <div class="mb-3  row p-0">
@@ -251,6 +287,15 @@ if (isset($_SESSION['usersession'])) {
                     </div>
                 </div>
                  <!-- ens Full name input -->
+                 <!-- start member image  input -->
+                       <div class="mb-3  row">
+                        <label for="inputPassword" class="col-sm-1  col-form-label">Member Image</label>
+                        <div class="col-sm-10 col-md-5 ">
+                        <input type="hidden" name="old_image" value="<?php echo $doFetch['avatar'] ?>">
+                            <input type="file" class="form-control form-control-lg " name="avatar" placeholder=" Choose your image "  >
+                        </div>
+                    </div>
+                <!-- ens member image  input -->              
                 <!-- start submit input -->
                 <div class="mb-3  row">
                     <div class=" offset-sm-1 col-sm-10">
@@ -272,6 +317,19 @@ if (isset($_SESSION['usersession'])) {
         echo '<h1 class="text-center"> update  Members</h1>';
         echo '<div class="container">';
         if($_SERVER['REQUEST_METHOD']=='POST'){
+            $old_image =$_POST['old_image'];
+
+            //uploade variables
+            $imageName=$_FILES['avatar']['name'];
+            $imageSize=$_FILES['avatar']['size'];
+            $imageType=$_FILES['avatar']['type'];
+            $imageTmp= $_FILES['avatar']['tmp_name'];
+            $imageAllowedExtentions=array("jpeg" , "jpg" , "gif" ,"png" );
+            // to get image extention using explode
+            $typ =explode('.', $imageName);
+            $endOfimagename= end($typ);
+            $imageExtention = strtolower($endOfimagename);
+
             // get variables from the form (from ths name of the input )
             $id= $_POST['userid'];
             $user= $_POST['username'];
@@ -297,13 +355,20 @@ if (isset($_SESSION['usersession'])) {
            if (empty($fullname)){
                $formerror[]= " sorry full name con't be <strong>empty</strong>";
            }
+
+           if( !empty($imageName) && ! in_array($imageExtention ,$imageAllowedExtentions)){
+            $formerror[]= " sorry this Extention is not  <strong>Allowed </strong>";
+           }
+          if( $imageSize >4194304){
+            $formerror[]= " sorry image can't be more than <strong>4 MB</strong>";
+          }
            foreach($formerror as $error){
                echo "<div class='alert alert-danger'>" .  $error  . "</div>";
            }
             // if there is no error proceed the update operation
             // update db with this info
-            if (empty($formerror)){
-                $stmt2 = $con->prepare('SELECT
+            if (empty($formerror)){              
+                 $stmt2 = $con->prepare('SELECT
                                           *
                                         FROM
                                           users 
@@ -317,8 +382,15 @@ if (isset($_SESSION['usersession'])) {
                     $theMsg= '<div class ="alert alert-danger">sorry this user is exist</div>';
                     redirectFunction($theMsg , 'back' );
                 }else{
-                     $stmt = $con->prepare("UPDATE users SET username = ? ,email = ? , fullname = ? , password = ? WHERE id = ?");
-                $stmt->execute(array($user , $email , $fullname, $pass, $id  ));
+                    if(empty($imageName)){
+                        $image=$old_image ;
+                    }else
+                    {
+                        $image = rand(0, 10000000000) . '_' . $imageName;
+                        move_uploaded_file($imageTmp , "images\avatars\\ ". $image) ;     
+                    } 
+                     $stmt = $con->prepare("UPDATE users SET username = ? ,email = ? , fullname = ? , password = ?,avatar=? WHERE id = ?");
+                $stmt->execute(array($user , $email , $fullname, $pass,$image, $id  ));
                //echo success message 
                $theMsg = "<div class='alert alert-success'>" . $stmt->rowcount() .'   ' .'record updated</div>';
                 redirectFunction($theMsg , 'back' , 4 ); 

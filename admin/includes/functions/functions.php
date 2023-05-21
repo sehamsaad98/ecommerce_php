@@ -9,6 +9,28 @@ function getTitle(){
         echo'defult';
     }
 }
+
+/*
+** Get All  Function 
+**Function Tp Get  All Records  From Any Database Table  
+*/
+function getAll( $field ,$table , $where = NULL,$and=NULL, $orderfield=NULL  , $ordering= 'DESC' ){
+    global $con ;
+    // if($where = NULL){
+    //     $sql = '' ;
+    // }else{
+    //     $sql = $where ;
+    // }
+
+    $getAll = $con->prepare("SELECT $field FROM $table $where $and ORDER BY $orderfield $ordering ");
+    $getAll->execute();
+    $records= $getAll->fetchAll();
+    return $records ;
+}
+
+
+
+
 /**
  **********************
  **Redirect fuction (this function accept parameters )

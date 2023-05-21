@@ -54,10 +54,10 @@
     </div>
     <ul class="links">
       <?php 
-            $getCategories=getCat();
-            foreach($getCategories as $getcat){
+         $getcats=getAll('*','categories' , '' , '' ,'id' , 'ASC');
+            foreach($getcats as $getcat){
               echo '<li>
-                <a  href="categories.php?pageid='.$getcat['id'].'&pagename='.str_replace(' ','-',$getcat['name']) .'">' 
+                <a  href="categories.php?pageid='.$getcat['id'].'">' 
                 . $getcat['name'] .
                 '</a>
               </li>';
@@ -70,9 +70,11 @@
             
            checkUserStatus($_SESSION['user']);
            echo '<div class="contain">';
-           echo '<a href="newad.php" class=" action_btn btn-success new-add">new ad</a>';
+           echo '<a href="newad.php" class=" action_btn  new-add">new ad</a>';
            echo '<a href="profile.php" class="action_btn ms-2 me-1">My Profile </a> ';
            echo '<a href="logout.php" class="action_btn ">logout </a> ';
+           echo '<a href="cart.php" ><i class="fa-solid fa-cart-shopping cart-icon ms-2"></i> </a> ';
+
            echo '</div>';
            if( checkUserStatus($sessionUser) == 1){
             //user not active 
@@ -85,8 +87,8 @@
   </div>
   <div class="dropdown_menu ">
     <?php 
-            $getCategories=getCat();
-            foreach($getCategories as $getcat){
+             $getcats=getAll('*','categories' , 'WHERE parent = 0' , '' ,'id' , 'ASC');
+             foreach($getcats as $getcat){
               echo '<li >
                 <a  href="categories.php?pageid='.$getcat['id'].'&pagename='.str_replace(' ','-',$getcat['name']) .'">' 
                 . $getcat['name'] .
@@ -98,9 +100,8 @@
 <?php 
     if(isset($_SESSION['user'])){
       echo '<div class="contain">';
-      
       echo '<a href="profile.php" class="action_btn  mb-1">My Profile </a> ';
-      echo '<a href="newad.php" class=" action_btn mb-1 btn-success new-add">new ad</a>';
+      echo '<a href="newad.php" class=" action_btn mb-1  new-add">new ad</a>';
       echo '<a href="logout.php" class="action_btn ">logout </a> ';
       echo '</div>';
 
@@ -138,8 +139,8 @@
         <div class="collapse navbar-collapse " id="app-nav">
             <ul class=" navbar-nav   ">
             <?php 
-            $getCategories=getCat();
-            foreach($getCategories as $getcat){
+             $getcats=getAll('*','categories' , 'WHERE parent = 0' , '' ,'id' , 'ASC');
+            foreach($getcats as $getcat){
               echo '<li class="nav-item">
                 <a class="nav-link " aria-current="page" href="categories.php?pageid='.$getcat['id'].'&pagename='.str_replace(' ','-',$getcat['name']) .'">' 
                 . $getcat['name'] .
